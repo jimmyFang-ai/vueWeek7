@@ -1,0 +1,168 @@
+vuecli 
+
+開發 router筆記
+
+a.views 
+ -建立 NewPage.vue 元件(開頭要大寫)
+ -撰寫template(模板內容), ex: 新增頁面
+
+b.開啟router內的index.js
+  -在const routes內建立path(路徑)、name(頁面名稱)、component(匯入views內建立的元件)
+  -path: '/newpage' (第一層加 "/" )
+  -name: '新增頁面'
+  -component: () => import('../views/NewPage.vue'),
+
+c.App.vue
+  -新增 router-link 標籤 ，綁定在router內index.js的 "routes變數"中建立元件的name屬性
+    <router-link :to="{name: '新增頁面'}">新增頁面</router-link>
+ 
+d.確認畫面路由是否正確
+  -開啟public內的index.html，並查看上面網址是否可以正確切換
+
+
+bootstrap5樣式(載入navbar選單樣式)
+  -在public內的index.html 引入 bootstrap5 css的cdn
+  -選擇navbar選單樣式複製到 App.vue 的template內
+  -複製  <router-link :to="{name: '新增頁面'}">新增頁面</router-link>標籤 取代 nav-item 內的a標籤
+  -加入class="nav-link"屬性 在 "router-link"
+
+
+巢狀路由 ex: 在NewPage.vue下建立兩個路由
+   a.views (建立兩個新元件)
+     -建立ComponentA.Vue元件 ex: <templeate><div>  Hello,Apple </dive></templeate>
+     -建立ComponentB.Vue元件
+    
+   b.router內的index.js
+    index.js: "建構路由分支"
+             -在const routes內建立path(路徑)、name(頁面名稱)、component(匯入views內建立的元件)
+                 -path: '/newpage' (第一層加 "/" )
+                 -name: '新增頁面'
+                 -component: () => import('../views/NewPage.vue'),
+                 -children(分支子項目):
+                   [{ path:  'apple', (子項目不需在前面加 " / ")
+                      component: () => import('../views/ComponentA.vue')
+                    },
+                    {
+                      path: 'banana',
+                      component: () => import('../views/ComponentB.vue')
+                    }
+                     ]
+
+    NewPage.vue: 建構模板<template> 並引入bootstrap樣式，在建立router-link 連結， <router-view></router-view>畫面
+                    <div class="row">
+                        <div class="col-4">
+                             <div class="list-group">
+                                 <router-link to="/newpage/apple" class="list-group-item list-group-item-action" >
+                                        水果 A
+                                 </router-link>
+                                 <router-link to="/newpage/banana" class="list-group-item list-group-item-action" >
+                                        水果 B
+                                 </router-link>
+                               </div>
+                          </div>
+
+                         <div class="col-8">
+                                 <router-view></router-view>
+                         </div>
+                     </div>
+               </template>
+
+
+
+ 一個元件插入多個視圖 - 具名視圖
+    a.views:
+      -建立ComponentC.vue 元件
+      -建立NamedView.vue 元件
+    
+    b.NamedView.vue建立模板template
+      -利用bootstrap格線系統分別建立兩個router-view
+
+    c.建置路由表(newpage下建立子分頁)
+         path: '/newpage',
+         name: '新增頁面',
+         component: () => import('../views/NewPage.vue'),
+         children: [
+         {
+           path: 'apple',
+           component: () => import('../views/ComponentA.vue')
+         },
+         {
+           path: 'banana',
+           component: () => import('../views/ComponentB.vue')
+         },
+命名視圖 {
+           path: 'namedView',
+           component: () => import('../views/NamedView.vue')
+           children: [
+  'c2a'  {
+           path: 'c2a',
+           components: {
+              left: () => import('../views/ComponentC.vue'),
+              right: () => import('../views/ComponentA.vue')
+            }
+          },
+  'a2b'   {
+            path: 'a2b',
+            components: {
+              left: () => import('../views/ComponentA.vue'),
+              right: () => import('../views/ComponentB.vue')
+            }
+          }
+        ]
+         }
+        ]
+   d.將命名視圖下的兩個子路由分別複製到NewPage.vue選單(router-link)上
+
+
+動態路由
+  a. 安裝vue.axios
+  b. 在views創建DynamicRouter.vue元件
+       -在script 用 import 匯入axios 套件
+       -並在  export default 匯出 
+         created() { 
+            const seed = 'this.$route.params.id'  //取得動態路由 id (確認每一次串接都是同id)
+            axios.get('https://randomuser.me/api/')
+             .then(res => {
+               console.log(res)
+            })}
+        
+  c.  設置路由
+        -架設在 routes變數中  'newpage' 中的children子項目中
+        {
+           path: 'dynamicRouter/:id', // " :id 為動態路由參數"
+           component: () => import('../views/DynamicRouter.vue')
+        },
+  
+  d. 測試串接api，在newpage網址後輸入 /dynamicRouter, 使用console.log 是否取得遠端資料
+
+
+動態路由搭配 Props
+   a. 在views創建DynamicRouterProps.vue元件 
+    <script>
+         import axios from 'axios'
+           export default {
+           props: ['id'],     props接受路由回傳id
+               created () {
+                    console.log('props', this.id)
+                    const seed = this.id
+                    axios.get(`https://randomuser.me/api/?seed=${seed}`)
+                       .then(res => {
+                           console.log(res)
+                        })
+                       }
+                    }
+      </script>
+
+
+   b. 設置動態路由,透過 "props"取得" 動態路由id"
+      {
+        path: 'dynamicRouterProps/:id',
+        component: () => import('../views/DynamicRouterProps.vue')
+props   props: (route) => { 
+          console.log('route:', route)
+            return {
+取得動態路id      id: route.params.id     
+             }
+            }
+           },
+

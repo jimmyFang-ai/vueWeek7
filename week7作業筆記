@@ -1,0 +1,83 @@
+流程規劃:
+   1.先建立每個面板及路由和方法
+   2.在建立功能模板
+
+
+dashboard(後台版面規劃):
+   -lodaing(套件)
+   -toastMessage(共用) V
+
+    - product頁面
+      -顯示產品列表 (product) V
+      -分頁功能pagination  V
+      -建立新產品   modal
+      -編輯特定產品 modal
+      -刪除特定產品 delmodal
+
+    - 訂單頁面  (order)
+      -顯示訂單列表
+      -分頁功能pagination
+      -切換付款功能
+      -檢視訂單 modal
+      -刪除特定訂單 delmodal
+
+    - 優惠卷頁面 (coupon)
+       -顯示優惠卷列表
+       -建立優惠卷   modal
+       -編輯特定優惠卷 modal
+       -刪除特定優惠卷 delmodal
+
+  user
+    - 使用者購物車頁面
+     -產品列表(查看更多modal、加到購物車modal)
+     -訂單列表
+     -驗證欄位
+
+
+components:
+  -adminNavbar(後台版型頁面)
+
+  (共用功能型modal)
+    -pagination(產品頁面、訂單頁面)
+    -delModal(產品頁面、訂單頁面、優惠卷頁面)
+    -toastMessage(公用) V
+
+   (不同分頁個別使用)
+      -couponModal(給優惠卷頁面使用: 新增、編輯)
+      -orderModal(訂單頁面使用: 檢視)
+      -product頁面(產品頁面使用: 新增、編輯)
+     
+
+
+優惠卷模板用:
+  -currency(貨幣轉換)
+
+  -dateTime(時間搓)
+
+
+provide (在外層主畫面寫入方法) 函式並用return
+   -inject(注入到跨步元件使用) ['外層方法']
+
+
+   6/24
+    1.components 建立 toastMessage v
+    2. app.vue 引入toastMessage v
+    3. navbar 注入httpMessageState v
+
+  
+   6/25
+   1. 建置產品頁面MODAL功能
+   2. 建置訂單頁面MODAL功能
+
+   6/26  產品頁面 modal bug
+    - non-emits event listeners (delProduct)  v 
+    - productComponent.openModal is not a function v
+
+         訂單頁面
+    - Unhandled error during execution of render function   模板的uesr打錯 打成 uesr 導致無法渲覽畫面
+    - TypeError: Cannot read property 'email' of undefined  模板的uesr打錯 打成 uesr 導致無法渲覽畫面
+
+   6/27  建置優惠卷畫頁面 v
+        
+   6/28    匯入前台 bug
+        -To install it, you can run: npm install --save @/components/FrontNavbar.vue  想把前台列表用元件匯入

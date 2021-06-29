@@ -1,0 +1,21 @@
+
+main.js: 
+     -進行全域註冊和引入套件，使用app.use(套件)引入套件
+     -可減少重複寫在其他元件import匯入套件的程式碼
+
+app.vue:
+     -主要畫面(父層)
+
+
+.env(環境變數): 儲存 apiUrl站點 和 apiPath
+            -在各元件調用方式: 透過"process.env".VUE_APP_PATH 
+                                  (node_module語法)
+
+
+$route: 取得參數 ex:this.$route.params.id
+
+$router: 調用方法 ex: push
+
+.components
+  -建立pagination.vue元件
+  -建立openModal.vue元件
